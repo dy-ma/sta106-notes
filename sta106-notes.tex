@@ -1,0 +1,163 @@
+\documentclass[10pt]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[margin=0.5in, a4paper, landscape]{geometry}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{blindtext}
+\usepackage{multicol}
+\usepackage[x11names]{xcolor}
+\usepackage[hidelinks]{hyperref}
+
+\setlength{\parindent}{0pt}
+
+\newcommand{\define}[1]{\colorbox{Thistle2}{#1}}
+\newcommand{\emphas}[1]{\colorbox{DarkSeaGreen2}{#1}}
+
+\newcommand{\mean}[1]{\mu_{#1}}
+\renewcommand{\exp}[1]{E\left\{#1\right\}} % expected
+\newcommand{\var}[1]{\sigma^2\left\{#1\right\}}
+\newcommand{\dev}[1]{\sigma\left\{#1\right\}}
+\newcommand{\subvar}[1]{\sigma^2_{#1}} % sigma subscript versions
+\newcommand{\subdev}[1]{\sigma_{#1}}
+
+\begin{document}
+\begin{multicols}{3}
+
+    \fbox{\parbox{2.8in}{
+            \textbf{STA 106 Notes - M. Pouokam}\\
+            \textbf{Dylan M Ang}\\
+            \textbf{\today}
+        }}
+
+
+    \tableofcontents
+
+    \section{Terminology}
+
+    \define{Subject}: A person, place or thing from which we measure data.
+
+    \define{Population}: The collection of all subjects of interest.
+
+    \define{Sample}: A subset of the population, from which we collect data.
+
+    \define{Response/Dependent Variable}: The variable which is of primary interest.
+
+    \define{Explanatory/Independent Variable}: The variable which we believe helps explain some of the variance in the response variable.
+
+    For this class, the response variable is \emphas{numerical}, and the explanatory variable/s are \emphas{categorical}. This is often phrased as ``how does this numerical variable differ by group?''
+
+    \define{Random Variable}: A variable whose outcome is random. These are typically denoted by capital letters.
+
+    \section{Notation}
+
+    Let $Y =$ the random variable denoting all possible values of the response variable.
+
+    Let $y =$ an observed value of $Y$ (in other words, measured observations).
+
+    Let $Y_{ij}=$ the rv denoting all possible values of the $jth$ observation in group $i$.
+
+    Let $y_{ij}=$ the $ith$ observed value of the $jth$ group in $Y$.
+
+    As an example, let $i=1$ denote sex M, and $i=2$ denote sex F.
+
+    \begin{itemize}
+        \item $Y_{13}=$ All possible values of height for the 3rd male. The outcome is random and unknown.
+        \item $y_{13}= 72$ inches. The specific observed value of the 3rd male once measured.
+    \end{itemize}
+
+    $\mu_i=$ The population mean for group i (a single value).
+
+    $\bar Y_i =$ All possible values of the sample mean for group i.
+
+    $\bar y_i =$ A specific, observed value of $\bar Y_i$. In other words, the mean of one given sample.
+
+    $\sigma_i =$ The population standard deviation for group i.
+
+    $S_i=$ All possible values of the sample standard deviation.
+
+    $s_i=$ A specific, observed value of $S_i$. In other words, the standard deviation of one given sample.
+
+    The book does not make this distinction $\implies Y=y$ and $\bar Y = \bar y$
+
+    \define{Parameter}: The unknown population value of some statistic. For example $\mu_i, \sigma_i$. These values are constant (non-random) if we could measure the population we would know the true value.
+
+    The goal of statistics 106 is to estimate parameters with sample values, and use the assumed distribution of those sample values to form \emphas{Hypothesie Tests (HTs)} and \emphas{Confidence Intervals (CIs)}.
+
+    \section{Mean and Variance of RVs}
+
+    Let $Y_i$ be drawn from a distribution with population mean $\mu_Y$ and population standard deviation $\sigma_Y$.
+
+    Let the \define{mean} of $Y_i = \mean{Y_i} = \exp{Y_i} = \mean{Y}$.
+
+    Let the \define{standard deviation} of $Y_i = \subdev{Y_i} = \dev{Y_i} = \subdev{Y}$.
+
+    \subsection{Linear Combinations of RVs}
+
+    Let $Y^*$ be a linear combination of $Y$ where $a,b \in \mathbb{R}$, then
+
+    \begin{center}
+        \begin{tabular}{l | l | l}
+            Combination    & Mean                         & Variance                        \\ \hline
+            $Y^* = a + Y$  & $\mean{Y^*} = a + \mean{Y}$  & $\subvar{Y^*} = \subvar{Y}$     \\
+            $Y^* = bY$     & $\mean{Y^*} = b\mean{Y}$     & $\subvar{Y^*} = b^2 \subvar{Y}$ \\
+            $Y^* = a + bY$ & $\mean{Y^*} = a + b\mean{Y}$ & $\subvar{Y^*} = b^2 \subvar{Y}$
+        \end{tabular}
+    \end{center}
+
+    \subsection{Summation Identities}
+
+    Let $Y_1, Y_2, \dots, Y_n$ be RVs
+    \begin{align*}
+        \exp{\sum^n_{i=1} Y_i} & = \exp{Y_1 + Y_2 + \dots + Y_n}           \\
+                               & = \exp{Y_1} + \exp{Y_2} + \dots \exp{Y_n} \\
+                               & = \sum^n_{i=1} \exp{Y_i}
+    \end{align*}
+
+    If $Y_1, Y_2, \dots, Y_n$ are independent RVs,
+    \begin{align*}
+        \var{\sum^n_{i=1} Y_i} & = \sum^n_{i=1} \var{Y_i}
+    \end{align*}
+
+    Let $\bar Y = \frac{1}{n} \sum^n_{i=1} Y_i$, $Y_i$ is independent with mean $\mean{Y}$ and std.dev. $\subdev{Y}$.
+    \begin{align*}
+        \exp{\bar Y}    & = \exp{\frac{1}{n} \sum^n_{i=1} Y_i} = \exp{\frac{1}{n} (Y_1 + Y_2 + \dots + Y_n)}       \\
+                        & = \frac{1}{n} \exp{Y_1 + Y_2 + \dots + Y_n}                                              \\
+                        & = \frac{1}{n} \Big(\exp{Y_1} + \exp{Y_2} + \dots + \exp{Y_n}\Big)                        \\
+                        & = \frac{1}{n} \sum^n_{i=1} \exp{Y_i} = \frac{1}{n} \sum^n_{i=1} \mean{Y}                 \\
+                        & = \frac{1}{n} (\mean{Y} + \mean{Y} + \dots + \mean{Y}) = \frac{1}{n} (n*\mean{Y})        \\
+        \exp{\bar Y}    & = \mean{Y}                                                                               \\
+        \var{\bar Y} & = \var{\frac{1}{n} \sum^n_{i=1} Y_i} = \left(\frac{1}{n}\right)^2 \var{\sum^n_{i=1} Y_i} \\
+                        & = \left(\frac{1}{n}\right)^2 \sum^n_{i=1} \var{Y_i}                                      \\
+    \end{align*}
+
+    \section{Normal RVs and \texorpdfstring{$\chi^2$}{X2} RV} % texorpdfstring allows for tokens for bookmarks
+
+    A mormal RV follows a bell curve created by a \emphas{probability density function (pdf)}.
+
+    If $Y$ is normally distributed with mean $\mean{Y}$ and std dev $\subdev{Y}$, we say that $Y \sim N(\mean{Y}, \subdev{Y})$
+
+    $Y \sim N(\mean{Y}, \subdev{Y}) \implies Y^* = a + bY \sim N(a + b\mean{Y}, b\subdev{Y})$
+
+    From this we can get two more results, 
+
+    If $Y_1, \dots, Y_n$ independent and $Y_i \sim N(\mean{Y}, \subdev{Y})$, then
+
+    \begin{enumerate}
+        \item $\bar Y \sim N(\mean{Y}, \subdev{Y}/\sqrt{n})$
+        \item $\sum Y_i \sim N(n \mean{Y}, \sqrt{n \subdev{Y}})$
+    \end{enumerate}
+
+    The \define{standard normal distribution} is a specific linear combination of a general normal distribution, denoted $Z$. 
+
+    Let $Y \sim N(\mean{Y}, \subdev{Y})$
+    \begin{align*}
+        Z & = \frac{Y - \mean{Y}}{\subdev{Y}} = \frac{Y}{\subdev{Y}} - \frac{\mean{Y}}{\subdev{Y}} \\
+        \exp{Z} & = \frac{-\mean{Y}}{\subdev{Y}} + \mean{Y} (\frac{1}{\subdev{Y}}) = 0 \\
+        \subvar{Z} & = \left(\frac{1}{\subdev{Y}}\right)^2 \subvar{Y} = 1 \\
+    \end{align*}
+
+    Therefore $Z \sim N(0,1)$
+
+\end{multicols}
+\end{document}
