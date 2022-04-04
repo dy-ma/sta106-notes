@@ -18,8 +18,12 @@
 \renewcommand{\exp}[1]{E\left\{#1\right\}} % expected
 \newcommand{\var}[1]{\sigma^2\left\{#1\right\}}
 \newcommand{\dev}[1]{\sigma\left\{#1\right\}}
-\newcommand{\subvar}[1]{\sigma^2_{#1}} % sigma subscript versions
-\newcommand{\subdev}[1]{\sigma_{#1}}
+\newcommand{\sigvar}[1]{\sigma^2_{#1}} % sigma subscript versions
+\newcommand{\sigdev}[1]{\sigma_{#1}}
+\newcommand{\svar}[1]{s^2_{#1}} % sigma subscript versions
+\newcommand{\sdev}[1]{s_{#1}}
+
+\newcommand{\prob}[1]{P\left\{#1\right\}}
 
 \begin{document}
 \begin{multicols}{3}
@@ -90,7 +94,7 @@
 
     Let the \define{mean} of $Y_i = \mean{Y_i} = \exp{Y_i} = \mean{Y}$.
 
-    Let the \define{standard deviation} of $Y_i = \subdev{Y_i} = \dev{Y_i} = \subdev{Y}$.
+    Let the \define{standard deviation} of $Y_i = \sigdev{Y_i} = \dev{Y_i} = \sigdev{Y}$.
 
     \subsection{Linear Combinations of RVs}
 
@@ -99,9 +103,9 @@
     \begin{center}
         \begin{tabular}{l | l | l}
             Combination    & Mean                         & Variance                        \\ \hline
-            $Y^* = a + Y$  & $\mean{Y^*} = a + \mean{Y}$  & $\subvar{Y^*} = \subvar{Y}$     \\
-            $Y^* = bY$     & $\mean{Y^*} = b\mean{Y}$     & $\subvar{Y^*} = b^2 \subvar{Y}$ \\
-            $Y^* = a + bY$ & $\mean{Y^*} = a + b\mean{Y}$ & $\subvar{Y^*} = b^2 \subvar{Y}$
+            $Y^* = a + Y$  & $\mean{Y^*} = a + \mean{Y}$  & $\sigvar{Y^*} = \sigvar{Y}$     \\
+            $Y^* = bY$     & $\mean{Y^*} = b\mean{Y}$     & $\sigvar{Y^*} = b^2 \sigvar{Y}$ \\
+            $Y^* = a + bY$ & $\mean{Y^*} = a + b\mean{Y}$ & $\sigvar{Y^*} = b^2 \sigvar{Y}$
         \end{tabular}
     \end{center}
 
@@ -119,45 +123,206 @@
         \var{\sum^n_{i=1} Y_i} & = \sum^n_{i=1} \var{Y_i}
     \end{align*}
 
-    Let $\bar Y = \frac{1}{n} \sum^n_{i=1} Y_i$, $Y_i$ is independent with mean $\mean{Y}$ and std.dev. $\subdev{Y}$.
+    Let $\bar Y = \frac{1}{n} \sum^n_{i=1} Y_i$, $Y_i$ is independent with mean $\mean{Y}$ and std.dev. $\sigdev{Y}$.
     \begin{align*}
-        \exp{\bar Y}    & = \exp{\frac{1}{n} \sum^n_{i=1} Y_i} = \exp{\frac{1}{n} (Y_1 + Y_2 + \dots + Y_n)}       \\
-                        & = \frac{1}{n} \exp{Y_1 + Y_2 + \dots + Y_n}                                              \\
-                        & = \frac{1}{n} \Big(\exp{Y_1} + \exp{Y_2} + \dots + \exp{Y_n}\Big)                        \\
-                        & = \frac{1}{n} \sum^n_{i=1} \exp{Y_i} = \frac{1}{n} \sum^n_{i=1} \mean{Y}                 \\
-                        & = \frac{1}{n} (\mean{Y} + \mean{Y} + \dots + \mean{Y}) = \frac{1}{n} (n*\mean{Y})        \\
-        \exp{\bar Y}    & = \mean{Y}                                                                               \\
+        \exp{\bar Y} & = \exp{\frac{1}{n} \sum^n_{i=1} Y_i} = \exp{\frac{1}{n} (Y_1 + Y_2 + \dots + Y_n)}       \\
+                     & = \frac{1}{n} \exp{Y_1 + Y_2 + \dots + Y_n}                                              \\
+                     & = \frac{1}{n} \Big(\exp{Y_1} + \exp{Y_2} + \dots + \exp{Y_n}\Big)                        \\
+                     & = \frac{1}{n} \sum^n_{i=1} \exp{Y_i} = \frac{1}{n} \sum^n_{i=1} \mean{Y}                 \\
+                     & = \frac{1}{n} (\mean{Y} + \mean{Y} + \dots + \mean{Y}) = \frac{1}{n} (n*\mean{Y})        \\
+        \exp{\bar Y} & = \mean{Y}                                                                               \\
         \var{\bar Y} & = \var{\frac{1}{n} \sum^n_{i=1} Y_i} = \left(\frac{1}{n}\right)^2 \var{\sum^n_{i=1} Y_i} \\
-                        & = \left(\frac{1}{n}\right)^2 \sum^n_{i=1} \var{Y_i}                                      \\
+                     & = \left(\frac{1}{n}\right)^2 \sum^n_{i=1} \var{Y_i}                                      \\
     \end{align*}
 
     \section{Normal RVs and \texorpdfstring{$\chi^2$}{X2} RV} % texorpdfstring allows for tokens for bookmarks
 
-    A mormal RV follows a bell curve created by a \emphas{probability density function (pdf)}.
+    \subsection{Normal RVs}
 
-    If $Y$ is normally distributed with mean $\mean{Y}$ and std dev $\subdev{Y}$, we say that $Y \sim N(\mean{Y}, \subdev{Y})$
+    A normal RV follows a bell curve created by a \emphas{probability density function (pdf)}.
 
-    $Y \sim N(\mean{Y}, \subdev{Y}) \implies Y^* = a + bY \sim N(a + b\mean{Y}, b\subdev{Y})$
+    If $Y$ is normally distributed with mean $\mean{Y}$ and std dev $\sigdev{Y}$, we say that $Y \sim N(\mean{Y}, \sigdev{Y})$
 
-    From this we can get two more results, 
+    $Y \sim N(\mean{Y}, \sigdev{Y}) \implies Y^* = a + bY \sim N(a + b\mean{Y}, b\sigdev{Y})$
 
-    If $Y_1, \dots, Y_n$ independent and $Y_i \sim N(\mean{Y}, \subdev{Y})$, then
+    From this we can get two more results,
+
+    If $Y_1, \dots, Y_n$ independent and $Y_i \sim N(\mean{Y}, \sigdev{Y})$, then
 
     \begin{enumerate}
-        \item $\bar Y \sim N(\mean{Y}, \subdev{Y}/\sqrt{n})$
-        \item $\sum Y_i \sim N(n \mean{Y}, \sqrt{n \subdev{Y}})$
+        \item $\bar Y \sim N(\mean{Y}, \sigdev{Y}/\sqrt{n})$
+        \item $\sum Y_i \sim N(n \mean{Y}, \sqrt{n \sigdev{Y}})$
     \end{enumerate}
 
-    The \define{standard normal distribution} is a specific linear combination of a general normal distribution, denoted $Z$. 
+    The \define{standard normal distribution} is a specific linear combination of a general normal distribution, denoted $Z$.
 
-    Let $Y \sim N(\mean{Y}, \subdev{Y})$
+    Let $Y \sim N(\mean{Y}, \sigdev{Y})$
     \begin{align*}
-        Z & = \frac{Y - \mean{Y}}{\subdev{Y}} = \frac{Y}{\subdev{Y}} - \frac{\mean{Y}}{\subdev{Y}} \\
-        \exp{Z} & = \frac{-\mean{Y}}{\subdev{Y}} + \mean{Y} (\frac{1}{\subdev{Y}}) = 0 \\
-        \subvar{Z} & = \left(\frac{1}{\subdev{Y}}\right)^2 \subvar{Y} = 1 \\
+        Z          & = \frac{Y - \mean{Y}}{\sigdev{Y}} = \frac{Y}{\sigdev{Y}} - \frac{\mean{Y}}{\sigdev{Y}} \\
+        \exp{Z}    & = \frac{-\mean{Y}}{\sigdev{Y}} + \mean{Y} (\frac{1}{\sigdev{Y}}) = 0                   \\
+        \sigvar{Z} & = \left(\frac{1}{\sigdev{Y}}\right)^2 \sigvar{Y} = 1                                   \\
     \end{align*}
 
     Therefore $Z \sim N(0,1)$
+
+    \subsection{\texorpdfstring{$\chi^2$}{chi2} Distribution}
+
+    The \define{$\chi^2$ distribution} (chi-squared) is a sum of independent squared Z distributions.
+
+    Let $Z_1, Z_2, \dots, Z_n$ be independent RVs where $Z_i \sim N(0,1)$
+
+    \begin{align*}
+        X              & = Z_1^2 + \dots + Z_n^2 \sim \chi_r^2 \text{ with degrees of freedom} \\
+        r              & = \text{ The number of summed and squared } Z_i^2                     \\
+        \exp{\chi_r^2} & = r
+    \end{align*}
+
+    \section{Hypothesis Testing and Confidence Intervals}
+
+    \subsection{Testing for difference in means}
+
+    Step 1: Declare Hypothesis
+    \begin{align*}
+         & H_0: \mean{1} = \mean{2} \;or\; \mean{1} \leq \mean{2} \;or\; \mean{1} \geq \mean{2} \\
+         & H_A: \mean{1} \neq \mean{2} \;or\; \mean{1} > \mean{2} \;or\; \mean{1} < \mean{2}
+    \end{align*}
+
+    Step 2: Calculate test-statistic
+    \begin{align*}
+        t_s & = \frac{(\bar{y_1} - \bar{y_2}) - \Delta_0}{\sqrt{\left(\frac{\svar{1}}{n_1} + \frac{\svar{2}}{n_2}\right)}} \\
+    \end{align*}
+
+    If equal variances are assumed, the following test statistic formula can be used.
+    \begin{align*}
+        t_s      & = \frac{(\bar{y_1} - \bar{y_2}) - \Delta_0}{\sqrt{\svar{p} (\frac{1}{n_1} + \frac{1}{n_2})}} \sim t, df = n_1 + n_2 - 2 \\
+        \svar{p} & = \frac{\svar{1} (n_1-1) + \svar{2} (n_2-1)}{n_1 + n_2 - 2}                                                             \\
+    \end{align*}
+
+    \define{$t_s$} = The number of estimated standard deviations our sample difference in means is from the null.
+
+    Step 3: Calculate the p-value
+
+    If $H_A \implies$ p-value
+
+    \begin{align*}
+        H_A                    & \implies & p                 \\
+        \mean{1} \neq \mean{2} &          & 2\prob{t > |t_s|} \\
+        \mean{1} < \mean{2}    &          & \prob{t < t_s}    \\
+        \mean{1} > \mean{2}    &          & \prob{t > t_s}
+    \end{align*}
+
+    p-value $= \prob{\text{our data or more extreme} | H_0 \; TRUE}$
+
+    \define{p-value} = probability of observing our sample data or more extreme, if in reality the null hypothesis were true.
+
+    Step 4: State decision rule and conclusion
+
+    \begin{align*}
+        If \; p-value & < \alpha, reject \; H_0                \\
+        If \; p-value & \geq \alpha, fail \;to\; reject \; H_0 \\
+    \end{align*}
+
+    Recall that
+    \begin{align*}
+        \alpha & = \prob{\text{Type I Error}} = \prob{reject \; H_0 | H_0 true} \\
+    \end{align*}
+
+    \subsection{Confidence Interval for difference in means}
+
+    The corresponding $(1-\alpha)100\%$ CI for $(\mean{1} - \mean{2})$ is
+
+    \begin{align*}
+        (\bar{y_1} - \bar{y_2}) & \pm t_{1 - \alpha/2; n_1 + n_2 - 2} \sqrt{\svar{p}\left(\frac{1}{n_1} + \frac{1}{n_2}\right)} \\
+    \end{align*}
+    $t_{1 - \alpha/2; n_1 + n_2 - 2}$ is the $(1-\alpha)100th$ percentile of a t distribution with $df = n_1 + n_2 - 2$
+
+    \subsection{Assumptions}
+    \begin{enumerate}
+        \item Random samples from both groups.
+        \item Groups are independent
+        \item $\sigdev{1} = \sigdev{2}$ if using $s_p$ formula.
+        \item $\bar{Y_1} - \bar{Y_2}$ is distributed normally, either because
+              \begin{enumerate}
+                  \item Both populations are normal
+                  \item $n_1$ and $n_2 \geq 30$ (Central limit theorem)
+              \end{enumerate}
+    \end{enumerate}
+
+    \section{Experimental Design}
+
+    \subsection{Sampling}
+
+    In ANOVA studies, the sampling scheme is very important. Typically, the \emphas{categorical variable} is seen as a \emphas{treatment}, and the goal is to see if it had an effect on the numerical variable.
+
+    In an \define{experiment}, subjects and randomly assigned a \emphas{treatment}, and the results are assessed to find a causal relationship between variables.
+
+    In an \define{observational study}, subjects are randomly sampled and may fall into natural \emphas{treatment groups}, but are not assigned one. The data is assessed to find \emphas{correlations} between variables.
+
+    \subsection{Factors}
+
+    \define{Factors} are the variables that experimenters control during an experiment in order to determine their effect on the response variable. A factor can take on only a small number of values, which are known as factor levels. Examples of factors are brand of equipment, where the factor levels are brand A, B, and C.
+
+    A \define{treatment} is a combination of factors that has been applied to a subject. Ex: A study with two factors - control vs drug group, and patient blood type.
+
+    \begin{tabular}{c|c|c|c|c}
+        bt/drug & A   & B   & AB    & O    \\\hline
+        C       & C,A & C,B & C, AB & C, O \\
+        D       & D,A & D,B & D, AB & D, O \\
+    \end{tabular}
+
+    C,A and D,A are two possible treatments.
+
+    \subsection{Crossed vs. Nested}
+
+    When we have two factors, the design can be either \emphas{crossed or nested}.
+
+    A \define{crossed design} is where every possible treatment (combinations of factor levels) is present in the study.
+
+    A \define{nested design} is where not all possible treatments are present. For example, if we have 8 schools and two teaching methods, but not all schools teach both types.
+
+    \begin{tabular}{c|c|c|c|c|c|c|c|c}
+          & A   & A   & B   & B   & C   & C   & C   & C   \\\hline
+        1 & 1,A & 1,A & 1,B & 1,B &     &     &     &     \\
+        2 &     &     &     &     & 2,C & 2,C & 2,C & 2,C \\
+    \end{tabular}
+
+    Here, we would say that schools are nested within class format.
+
+    \subsection{Blocking}
+
+    Consider an experiment that is trying to determine if a new supplement increases vitamin C absorption.
+
+    Let Y response variable = vitamin C absorption
+
+    Let Factor A = group with levels ``control'' and ``new''.
+
+    There is a \emphas{total variance} in how subjects absorb vitamin C. If we can explain more of that variance, we are more likely to be able to tell if factor A had an effect.
+
+    \define{Blocking} is using another explanatory variable to further split the subjects. For example, perhaps gender affects how subjected absorb vitamin C. Then we could first block (separate) subjects by gender, then randomly assign them to factor A. This may reduce unexplained variance in Y.
+
+    \subsection{ANOVA Designs}
+
+    Most ANOVA models assume an underlying structure to the data,
+
+    \begin{align*}
+        Y & = [overall \; constant] + [same \; things] \\
+          & + [individual \; error]
+    \end{align*}
+
+    For example, we may say that the height of a tree has some \emphas{overall value} which could be affected by the \emphas{same things}, and then also \emphas{individual variance (error)}
+
+    Depending on the design of the study, we use different models.
+
+    \define{Completely Randomized Designs} are where treatments are assigned to subjects randomly.
+
+    For example, say we assign a sample of trees randomly to 4 different fertilizers (A,B,C,D).
+
+    Then our model would be 
+
+    \begin{align*}
+        height & = [some \; constant] + [fertilizer \; effect] \\
+                & + [ind \; error]
+    \end{align*}
 
 \end{multicols}
 \end{document}
