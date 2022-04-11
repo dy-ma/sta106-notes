@@ -22,8 +22,11 @@
 \newcommand{\sigdev}[1]{\sigma_{#1}}
 \newcommand{\svar}[1]{s^2_{#1}} % sigma subscript versions
 \newcommand{\sdev}[1]{s_{#1}}
+\newcommand{\err}[1]{\epsilon_{#1}}
 
 \newcommand{\prob}[1]{P\left\{#1\right\}}
+
+\newcommand{\drawline}{\noindent\rule{\linewidth}{0.1pt}}
 
 \begin{document}
 \begin{multicols}{3}
@@ -318,6 +321,8 @@
 
     For example, we may say that the height of a tree has some \emphas{overall value} which could be affected by the \emphas{same things}, and then also \emphas{individual variance (error)}
 
+    This is similar to a \emphas{regression model}
+
     Depending on the design of the study, we use different models.
 
     \define{Completely Randomized Designs} are where treatments are assigned to subjects randomly.
@@ -330,6 +335,281 @@
         height & = [some \; constant] + [fertilizer \; effect] \\
                 & + [ind \; error]
     \end{align*}
+
+    \section{Single Factor ANOVA} 
+
+    Consider Y = numeric, and X = categorical with ``a'' categories total. The basic model we use is,
+
+    \begin{equation*}
+        Y_{ij} = \mean{i} + \err{ij} \quad i=1,\dots,a, j=1,\dots,n_i
+    \end{equation*}
+
+    \begin{itemize}
+        \item $Y_{j}$ = the jth value of Y for the ith group.
+        \item $\mean{i}$ = the unknown, true population mean for the ith group.
+        \item $\err{ij}$ = the jth residual/error of Y for the ith group.
+    \end{itemize}
+
+    We assume
+    \begin{enumerate}
+        \item $Y_{ij}'s$ were randomly sampled (independent).
+        \item The ith group is independent ($i=1,\dots,a$)
+        \item $\err{ij} \sim N(o, \sigvar{\epsilon})$ (errors are independent and normally distributed with mean 0, constant variance.)
+    \end{enumerate}
+
+    Notice that $Y_{ij}$ is a linear combination of the RV $\err{ij}$, so
+
+    \begin{align*}
+        \exp{Y_{ij}} & = \exp{\mean{i} + \err{ij}} \\
+                    & = \exp{\mean{i}} + \exp{\err{ij}} \\
+                    & = \mean{i} + 0 = \mean{i}
+    \end{align*}
+
+    \begin{align*}
+        \var{Y_{ij}} & = \var{\mean{i} + \err{ij}} \\
+                & = \var{\mean{i}} + \var{\err{ij}} \\
+                & = 0 + \sigvar{\epsilon} = \sigvar{\epsilon}
+    \end{align*}
+
+    If we assume $\err{ij}$ is normally distributed $\implies$ $Y_{ij}$ is normally distributed. Therefore, 
+
+    \begin{equation*}
+        Y_{ij} \sim N(\mean{i}, \sigvar{\epsilon})
+    \end{equation*}
+
+    \subsection{Estimating \texorpdfstring{$\mean{i}$}{mui} and Notation}
+
+    Estimate population mean with sample mean. Get $\mean{i}$ from $\bar{y_{i}}$.
+
+    First, some notation. Let
+
+    \begin{enumerate}
+        \item $Y_{i\bullet} = \sum_{j=1}^{n_i} Y_{ij}=$ total for all $n_i$ observations in group i.
+        \item $Y_{\bullet\bullet} = \sum_{i=1}^{a} \sum_{j=1}^{n_i} Y_{ij}=$ total for entire sample regardless of group.
+        \item $n_{T} = \sum_{i=1}^a n_i =$ overall sample size regardless of group.
+        \item $\bar Y_{i\bullet} = Y_{i\bullet}/n_i=$ sample mean for all observations in group i.
+        \item $\bar Y_{\bullet\bullet} = \sum_{i=1}^a \sum_{j=1}^{n_i} Y_{ij}/\sum_{i=1}^a n_i = \sum_{i=1}^a \bar Y_{i\bullet} n_i / n_T =$  overall sample mean.
+    \end{enumerate}
+
+    \drawline
+
+    Is $\bar Y_{i\bullet}$ a good estimator for $\mu$?
+
+    Consider,
+
+    \begin{align*}
+        Q & = \sum_{i=1}^a \sum_{j=1}^{n_i} \err{ij}^2 = \text{ Sum of Squared Errors} \\
+            & = \sum_i \sum_j (Y_{ij} - \mean{i})^2 \\
+            & = \sum_j (Y_{ij} - \mean{1})^2 + \sum_j (Y_{ij} - \mean{2})^2  + \dots \sum_j (Y_{ij} - \mean{a})^2 
+    \end{align*}
+
+    \begin{align*}
+        \frac{dQ}{d\mean{i}} & = \frac{d}{d\mean{i}} \left\{\sum_j (Y_{ij} - \mean{1})^2 +\dots+ \sum_j (Y_{ij} - \mean{i})^2  \dots \right\} \\
+            & = \frac{d}{d\mean{i}} \left\{\sum_j (Y_{ij} - \mean{i})^2 \right\} \\
+            & = 2\sum_j (Y_{ij} - \mean{i}) (-1) = -2 \sum_j (Y_{ij} - \mean{i})     
+    \end{align*}
+
+    then expand the sum and set to ``0''.
+
+    \begin{align*}
+        -2 \sum_j (Y_{ij} - \mean{i})  & = 0 \implies \sum_j (Y_{ij} - \mean{i}) = 0 \\
+            & = \sum_j{Y_{ij}} - \sum_j{\mean{i}} = 0 \\
+            & = \sum_j \mean{i} = \sum_j Y_{ij} \\
+            & = n_i \mean{i} = \sum_j Y_{ij} \\
+            & = \hat{\mean{i}} = \sum_j \frac{Y_{ij}}{n_i} \\
+            & = \bar Y_{i\bullet}
+    \end{align*}
+
+    Thus, $\hat{\mean{i}} = \bar{Y_{i\bullet}}$ is the estimator of $\mean{i}$ that minimizes the sum of squared errors.
+
+    \drawline
+
+    Mean and Variance of $\hat{\mean{i}}$
+    \begin{align*}
+        \exp{\hat{\mean{i}}} & = \exp{\sum_j Y_{ij}/n_i} = \frac{1}{n_i} \exp{\sum_j Y_{ij}} \\
+            & = \frac{1}{n_i} \sum_j \exp{Y_{ij}} = \frac{1}{n_i} \sum_j \mean{i} \\
+            & = \frac{1}{n_i} (n_i \mean{i}) = \mean{i} \\
+        \implies \exp{\hat{\mean{i}}} & = \mean{i} 
+    \end{align*}
+
+    \begin{align*}
+        \var{\hat{\mean{i}}} & = \var{\sum_j Y_{ij}/n_i} = (\frac{1}{n_i}^2) \var{\sum_j Y_{ij}} \\
+            & = \frac{1}{n_i}^2 \sum_j \var{Y_{ij}} = \frac{1}{n_i^2} n_i \var{\epsilon} \\
+        \implies \var{\hat{\mean{i}}} & = \frac{\sigvar{\epsilon}}{n_i}
+    \end{align*}
+
+    Since $\hat{\mean{i}} = \sum_j Y_{ij}/n_i$ is a linear combination of normal RVs, it is normally distributed.
+
+    Thus, 
+
+    \begin{align*}
+        \bar Y_{i\bullet} = \hat{\mean{i}} \sim N(\mean{i}, \sqrt{\sigvar{\epsilon}/n_i})
+    \end{align*}
+
+    \subsection{Residuals/Errors}
+
+    The errors for a model are the actual values minus the estimated values, so
+
+    \begin{equation*}
+        \err{ij} = Y_{ij} - \mean{i}
+    \end{equation*}
+
+    The estimated errors (residuals) are 
+
+    \begin{equation*}
+        e_{ij} = y_{ij} - \hat{\mean{i}} \; (or \; \hat{\err{ij}} = y_{ij} - \hat{\mean{i}})
+    \end{equation*}
+
+    \subsection{Total Variance Partitioning}
+
+    The total or overall variance of a data set is widely accepted to be the sum of squared distance from the mean. It is often denoted SSTO and defined as 
+
+    \begin{align*}
+        SSTO = \sum_i \sum_j (Y_{ij} - \bar Y_{\bullet\bullet})^2
+    \end{align*}
+
+    We can decompose $(Y_{ij} - \bar Y_{\bullet\bullet})$
+
+    \begin{align*}
+        (Y_{ij} - \bar Y_{\bullet\bullet}) & = Y_{ij} - \bar Y_{\bullet\bullet} + \bar Y_{i\bullet} - \bar Y_{i\bullet} \\
+            & = (\bar Y_{i\bullet} - \bar Y_{\bullet\bullet}) + (Y_{ij} - \bar Y_{i\bullet}) \\
+            & = (\bar Y_{i\bullet} - \bar Y_{\bullet\bullet}) + e_{ij}
+    \end{align*}
+
+    \newcommand{\bul}{\bullet}
+
+    Square both sides and expand,
+
+    \begin{align*}
+        (Y_{ij} - \bar Y_{\bul\bul})^2 & = (\bar Y_{i\bul} - \bar Y_{\bul\bul})^2 + (e_{ij}^2) + 2(\bar Y_{i\bul} - \bar Y_{\bul\bul}) e_{ij} \\
+    \end{align*}
+
+    \begin{align*}
+        \sum_i \sum_j (Y_{ij} - \bar Y_{\bul\bul})^2 & = \sum_i \sum_j (\bar Y_{i\bul} - \bar Y_{\bul\bul})^2  \\
+        & + \sum_i \sum_j(e_{ij}^2) + 0 \\
+    \end{align*}
+
+    In other words, the total variance can be partitioned into 2 parts:
+
+    \begin{enumerate}
+        \item $SSA = \sum_i \sum_j (\bar Y_{i\bul} - \bar Y_{\bul\bul})^2 = \sum_i n_i (\bar Y_{i\bul - \bar Y_{\bul\bul}})^2$ = \define{Factor A Sum of Squares}.
+        \item $SSE = \sum_i \sum_j e_{ij}^2$ = \define{Sum of Squares Error}.
+    \end{enumerate}
+
+    In general, we want SSE to be small (low error) so then SSA is large. This means that much of the variance in Y is due to a difference in the overall mean vs. group mean, and not due to error. This is why it is called analysis of variance.
+
+    \subsection{SS Properties}
+
+    Notice SSTO, SSA, and SSE are sums of squared values, so they keep growing larger as i or j increase. They never converge.
+
+    Due to this, we \emphas{stabilize or standardize} the SS values to obtain \define{``Mean Square''} values. The value we stabilize them with is the df (degrees of freedom).
+
+    \drawline
+
+    To find $df\{SSTO\} = MSTO$
+
+    $df\{SSTO\}$ = number of observations that can freely vary, subject to our constraint.
+
+    Our constraint 
+    \begin{align*}
+        \implies & \sum_i \sum_j (Y_{ij} - \bar Y_{\bul\bul}) = 0 \\
+        \implies & \bar Y_{\bul\bul} = \sum_i \sum_j Y_{ij}/n_T 
+    \end{align*}
+
+    So, we may allow $n_T - 1$ values of $Y_{ij}$ to vary freely, but the last one cannot.
+
+    So, $df\{SSTO\} = n_T - 1$. Thus,
+
+    \newcommand{\df}[1]{df\left\{#1\right\}}
+    \begin{equation*}
+        MSTO = SSTO/\df{SSTO} = \frac{SSTO}{n_T-1}
+    \end{equation*}
+
+    \drawline
+
+    To find $\df{SSA} = MSA$
+
+    \begin{align*}
+        SSA = \sum_i n_i (\bar Y_{i\bul} - \bar Y_{\bul\bul})^2
+    \end{align*}
+
+    \newcommand{\bull}{\bullet\bullet}
+
+    We have ``a'' values of $\bar Y_{i\bul}$ that we are summing over, and the constraint is $\sum_i n_i (\bar Y_{i\bul} - \bar Y_{\bull}) = 0$
+
+    Thus, $\df{SSA} = a - 1$
+
+    \begin{align*}
+        MSA & = SSA/\df{SSA} \\
+        \exp{MSA} & = \sigvar{\epsilon} + \left(\sum_i n_i (\mean{i} - \mu )^2\right)/(a-1)
+    \end{align*}
+
+    \drawline
+
+    To find $\df{SSE} = MSE$
+
+    $SSE = \sum_i \sum_j (Y_{ij} - \bar Y_{i\bul})^2$ which uses $n_T$ values of $Y_{ij}$ and has ``a'' constraints: $\sum_j (Y_{ij} - \bar Y_{i\bul}) = 0$
+
+    Thus $\df{SSE} = n_T - a$
+
+    \begin{align*}
+        MSE & = SSE/\df{SSE} \\
+        \exp{MSE} & = \sigvar{\epsilon}
+    \end{align*}
+
+    \subsection{F test for equal means}
+
+    The first main question of single factor ANOVA is ``is the statistical evidence to suggest the group means are equal for all groups?''
+
+    To answer that question, we will compare MSE to MSA, and use the fact that $\exp{MSE} = \exp{MSA}$ if and only if $\mean{i} = \mu$ for all i (i.e. the group means equal the overall mean).
+
+    \drawline
+
+    Step 1: Declare \emphas{Hypotheses}
+
+    $H_0: \mean{1} = \mean{2} = \dots = \mean{a}$
+
+    $H_A:$ At least one $\mean{i} \ne$ to another.
+
+    Assume $H_0$ is true.
+
+    \drawline
+    
+    Step 2: Find \emphas{test-statistic}
+
+    Let our test-statistic be 
+
+    \begin{equation*}
+        F_s = \frac{MSA}{MSE}
+    \end{equation*}
+
+    Notice if $H_0$ were exactly true, $F^* = 1$
+
+    We can show that, if $H_0$ is true, $F_s$ is the ratio of two independent $\chi^2$ variables, and is F distributed with $\df{num} = a-1, \df{denom}=n_T-a$
+
+    \drawline
+
+    Step 3: Calculate \emphas{p-value}
+
+    \begin{align*}
+        p & = \prob{F > F_s} \text{ where}\\
+        \df{num} & = a-1, \df{denom} = n_T - a
+    \end{align*}
+
+    \drawline
+
+    Step 4: \emphas{Decision Rule and Conclusion}
+
+    If p-value $< \alpha$, reject $H_0$
+
+    If p-value $\geq \alpha$, fail to reject $H_0$
+
+    Note: SSE can be written as :
+
+    \begin{align*}
+        SSE = \sum_i \svar{i} (n_i - 1)
+    \end{align*}
+    $\svar{i} =$ sample variance for the ith group
 
 \end{multicols}
 \end{document}
