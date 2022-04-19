@@ -344,6 +344,8 @@
         Y_{ij} = \mean{i} + \err{ij} \quad i=1,\dots,a, j=1,\dots,n_i
     \end{equation*}
 
+    This is called the \define{group mean model}
+
     \begin{itemize}
         \item $Y_{j}$ = the jth value of Y for the ith group.
         \item $\mean{i}$ = the unknown, true population mean for the ith group.
@@ -610,6 +612,242 @@
         SSE = \sum_i \svar{i} (n_i - 1)
     \end{align*}
     $\svar{i} =$ sample variance for the ith group
+
+    If we fail to reject $H_0$, that means that the tested factor has no effect on the mean.
+
+    If we reject $H_0$, the tested factor has an effect on the mean.
+
+    \subsection{Alternative Form of Single Factor ANOVA}
+
+    This is called the \define{factor effect model}.
+
+    \begin{equation}
+        Y_{ij} = \bar \mu + \gamma_i + \err{ij} \text{ where } \sum^a_{i=1} \gamma_i = 0
+    \end{equation}
+
+    We have the same 
+
+    \section{Alternative Approach to F test}
+
+    Consider a ``full'' and ``reduced'' model,
+
+    \define{Full Model:} The movel with the most parameters being considered.
+
+    \define{Reduced Model:} is a subset of the full model.
+
+    For single factor ANOVA, 
+
+    \begin{align}
+        Y_{ij} & = \mean{i} + \err{ij} \quad \text{Full: ``a'' parameters} \\
+        Y_{ij} & = \mean{0} + \err{ij} \quad \text{Reduced: 1 parameter}
+    \end{align}
+
+    Step 1: Declare Hypotheses
+
+    $H_0$: the reduced model is a statistically better fit.
+
+    $H_A$: the reduced model is not a statistically better fit.
+
+    \begin{align}
+        SSE_F & = SSE \text{ of full model} \\
+        SSE_R & = SSE \text{ of Reduced model} 
+    \end{align}
+
+    \drawline
+
+    Step 2: Calculate F test-statistic
+
+    \begin{equation}\label{Fstat_alt}
+        F_s = \left[\frac{SSE_R - SSE_F}{\df{SSE_R} - \df{SSE_F}}\right] \Big/ \left[\frac{SSE_F}{\df{SSE_F}}\right]
+    \end{equation}
+
+    where 
+
+    \begin{align}
+        \df{num} & = \df{SSE_R} - \df{SSE_F} \\
+        \df{denom} & = \df{SSE_F} \\
+        \df{SSE} & = n_T - a \\
+        \df{SSE_F} & = n_T - a \\
+        \df{SSE_R} & = n_T - 1 
+    \end{align}
+
+    NOTE: In \emphas{Single Factor ANOVA}, (\ref{Fstat_alt}) reduces to 
+
+    \begin{equation*}
+        F_S = \frac{MSA}{MSE}
+    \end{equation*}
+
+    \section{Calculating Power}
+
+    The \define{power} of a test is the probability of rejecting $H_0$ when $H_0$ is false. Aka the probability of correctly rejecting the null.
+
+    \begin{equation}
+        Power = \prob{\text{Reject } H_0 | H_0 \text{ false}}
+    \end{equation}
+
+    This calculation requires that we assume a specific $H_A$ is true, i.e that we assume some values of $\mean{i}$ are true, where not all $\mean{i}$ are equal.
+
+    Then, $F_s$ is no longer F distributed, it is non-central-F, with parameter $\phi$ (phi) which measures how much different $F_s$ is under $H_A$ to the under $H_0$.
+
+    \begin{equation}
+        \phi = \frac{1}{\sigdev{\epsilon}} \sqrt{\frac{\sum^n_{i=1} n_i (\mean{i} - \mean{0})^2}{a}}
+    \end{equation}
+
+    In practice, $\mean{i}$ and $\mean{0}$ must be approximated based on sample values.
+
+    After calculating $\phi$, use the \define{power table} to find power values given $\df{num}, \df{denom}, \alpha, \phi$
+
+    For the Power table, \emph{round down} all degrees of freedom, but if $\phi$ isn't in the table, round up or down to pick the closest value.
+
+    NOTE: $\sqrt{MSE}$ is an estimate for $\sigdev{\epsilon}$
+
+    NOTE: Power calculations require strict assumptions because we assume $\mean{i}, \mean{0}, \sigdev{\epsilon}$. Be sure to take power calculations as estimates.
+
+    \section{Sample Size Calculations}
+
+    A common request is to determine the minimum sample size needed to achieve a particular power for a given $\alpha$. 
+
+    Make a few changes,
+
+    \begin{enumerate}
+        \item We assume all $n_i$ values will be equal. Call this common value $n_c$.
+        \item We still assume $\sigvar{\epsilon}$ is known.
+        \item Instead of specifying $\phi$, focus on $\Delta$.
+    \end{enumerate}
+
+    \begin{equation}
+        \Delta = \text{Largest effect size} = max\{\mean{i}\} - min\{\mean{i}\}
+    \end{equation}
+
+    and more specifically,
+
+    $\Delta/\sigvar{\epsilon}$ = the number of standard deviations of $\err{ij}$ the largest mean is suspected to be from the smallest.
+
+    $\beta = \prob{\text{Type II Error}}$
+
+    $Power = 1 - \beta$
+
+    To use the table, select the table section witht the desired Power, then choose the column with the closest value for $\Delta/\sigma$ (round up or down), and then choose the subcolumn with the desired $\alpha$. Go down to the row with the correct $a$ value. The value in that slot is the minimum sample size per group $n_c$. 
+
+    Notes:
+    \begin{itemize}
+        \item Generally, as $\alpha \uparrow, \beta \downarrow$ and vice versa.
+        \item The larger $\phi$, the more difference there was in the assumed $\mean{i}$, and the higher the power.
+        \item The larger $\Delta/\sigdev{\epsilon}$, the less $n_c$ has to be for a particular power.
+    \end{itemize}
+
+    \section{Confidence Intervals for SFA}
+
+    If we have rejected the null hypothesis that the population means are equal, confidence intervals answer the followup question, ``which means are different?''
+
+    \subsection{CI for Single mean}
+
+    For estimating a particular $\mean{i}$, we can use the fact that 
+
+    \begin{align}
+        \bar{Y_{i\bul}} & \sim N(\mean{i}, \sqrt{\sigvar{\epsilon}/n_i}) \\
+        \implies \frac{\bar{Y_{i\bul}} - \mean{i}}{\sqrt{\sigvar{\epsilon}}/n_i} & \sim N(0,1)
+    \end{align}
+
+    $\sigvar{\epsilon}$ is unknown but can be estimated with $\sqrt{MSE}$. However, then $(\bar{Y_{i\bul}} - \mean{i})/\sqrt{MSE/n_i}$ follows a t distribution with $df = n_T - a$.
+
+    Thus a $(1-\alpha) 100\%$ CI for $\mean{i}$ is:
+
+    \begin{equation}
+        \bar{Y_{i\bul}} \pm t_{1 - \alpha/2; n_T - a} \sqrt{MSE/n_i}
+    \end{equation}
+
+    \subsection{CI for difference in Means}
+
+    For a CI comparing $\mean{i}$ to $\mean{i}'$ where $i \ne i'$, we have a similar conclusion that,
+
+    \begin{equation}
+        (\bar{Y_{i\bul}} - \bar{Y_{i\bul}'}) \sim N(\mean{i} - \mean{i}', \sqrt{\sigvar{\epsilon}/(n_i + n_i')})
+    \end{equation}
+
+    and so 
+
+    \begin{equation}
+        \frac{[(\bar{Y_{i\bul}} - \bar{Y_{i\bul}'}) - (\mean{i} - \mean{i}')]}{\sqrt{\sigvar{\epsilon}/(n_i + n_i')}} \sim t_{n_T - a}
+    \end{equation}
+
+    NOTE: The abova results depend on the assumptions of SFA.
+
+    Thus, a $(1-\alpha)100\%$ CI for $(\mean{i} - \mean{i}')$ is 
+
+    \begin{equation}
+        (\bar{Y_{i\bul}} - \bar{Y_{i\bul}'}) \pm t_{1-\alpha/2; n_T - a} \sqrt{MSE/(n_i + n_i')}
+    \end{equation}
+
+    \subsection{CI for contrast of means}
+
+    A \define{contrast} of group means is a linear combination of $\mean{i}$ where the constants in front of the $\mean{i}$'s sum to 0.
+
+    \begin{equation}
+        \sum^a_{i=1} c_i \mean{i} \text{ where } \sum_i c_i = 0
+    \end{equation}
+
+    Notice that $\sum_i c_i \bar{Y_{i\bul}} \sim N(\sum c_i \mean{i}, \sqrt{MSE \sum c_i^2/n_i})$
+
+    Thus a $(1-\alpha)100\%$ CI for $\sum c_i \mean{i}$ is 
+
+    \begin{equation}
+        \sum_i c_i \bar{Y_{i\bul}} \pm t_{1-\alpha/2; n_t - a} \sqrt{MSE \sum c_i^2/n_i}
+    \end{equation}
+
+    Notice: all CIs use $\sqrt{MSE}$, which works because the assumption of SFA is that all group std. dev.'s are equal.
+
+    \subsection{Simultaneous CI}
+
+    We often want to make multiple confidence intervals for an ANOVA model. If each CI has $\alpha = \prob{\text{Type 1 Error}}$, the error builds with each interval. So for a simultaneous CI with 2 intervals, the maximum error is 1.0.
+
+    Proof: Let $A = \#$ of Type I errors made out of 2 intervals.
+
+    \begin{align*}
+        \prob{A \ge 1} & = 1 - \prob{A < 1} = 1 - \prob{A = 0} \\
+                        & = 1 - (1 - \alpha)^2 = 0.19
+    \end{align*}
+
+    This can be generalized to: for g confidence intervals at level $(1-\alpha)100\%$, the overall/family/simultaneous error rate is: $1-(1-\alpha)^g$
+
+    \subsection{Correcting CI to reduce alpha}
+
+    $(1-\alpha)100\%$ CIs that correct for a increased $\alpha$
+    \begin{align}
+        \text{Tukey's} & \quad \bar{Y_{i\bul}} - \bar{Y_{i\bul}'} \pm T \sqrt{MSE/(n_i + n_i')} \\
+        \text{Scheffe's} & \quad \sum_i c_i \bar{Y_{i\bul}} \pm S \sqrt{MSE \left(\sum_i c_i/n_i\right)} \\
+        \text{Bonferroni's} & \quad \bar{Y_{i\bul}} - \bar{Y_{i\bul}'} \pm B \sqrt{MSE/(n_i + n_i')}
+    \end{align}
+
+    \drawline
+
+    Multipliers
+
+    \begin{align}
+        T & = \frac{1}{\sqrt{2}} q_{1-\alpha; a, n_t - a} \\
+        S & = \sqrt{(a-1) F_{1-\alpha; a - 1, n_T - a}} \\
+        B & = t_{1 - \alpha/(2g); n_T - a} 
+    \end{align}
+
+    \drawline
+    
+    Distributions
+    \begin{itemize}
+        \item $q(1-\alpha; a, n_t - a)$ represents the $(1-\alpha)100^{th}$ percentile of a studentized range distribution at $1-\alpha$ with degrees of freedom $a$ and $n_T - a$.
+        \item $F(1-\alpha; a-1, n_T - a)$ represents the test statistic from an F distribution at $(1-\alpha)$ given $df_1 = a-1$ and $df_2 = n_T - a)$.
+        \item $t(1-\alpha(2g); n_T - a)$ represents a test statistic from a t distribution at $1-\alpha/(2g)$ with degrees of freedom $n_T - a$. Note that $1-\alpha/2$ becomes over $2g$, this is because Bonferroni simply decreases the $\alpha$ value per interval to sum to $\alpha$ overall.
+    \end{itemize}
+
+    \drawline
+
+    Applications
+    \begin{itemize}
+        \item Tukey results in narrower CIs when only pairwise differences are being considered.
+        \item Scheffe is best for taking multiple contrasts, other than pairwise differences (or as a combination of pairwise differences and general contrasts). In general, if an interval is only pairwise combinations, Tukey is best.
+        \item Bonferroni is best used when a relatively small number of intervals is being taken (g is small). For large values of g, the error becomes so small that the actual multiplier becomes very large, and thus the interval widens.
+    \end{itemize}
+
+    NOTE: There is a change in the conclusion of these three corrected CIs, we say we are \define{overall} (or family wise or simultaneously) $(1-\alpha)100\%$ confident that $\dots$.
 
 \end{multicols}
 \end{document}
