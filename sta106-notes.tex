@@ -762,13 +762,13 @@
     For a CI comparing $\mean{i}$ to $\mean{i}'$ where $i \ne i'$, we have a similar conclusion that,
 
     \begin{equation}
-        (\bar{Y_{i\bul}} - \bar{Y_{i\bul}'}) \sim N(\mean{i} - \mean{i}', \sqrt{\sigvar{\epsilon}/(n_i + n_i')})
+        (\bar{Y_{i\bul}} - \bar{Y_{i\bul}'}) \sim N(\mean{i} - \mean{i}', \sqrt{\sigvar{\epsilon} \left(\frac{1}{n_i} + \frac{1}{n_i'}\right)}
     \end{equation}
 
     and so 
 
     \begin{equation}
-        \frac{[(\bar{Y_{i\bul}} - \bar{Y_{i\bul}'}) - (\mean{i} - \mean{i}')]}{\sqrt{\sigvar{\epsilon}/(n_i + n_i')}} \sim t_{n_T - a}
+        \frac{[(\bar{Y_{i\bul}} - \bar{Y_{i\bul}'}) - (\mean{i} - \mean{i}')]}{\sqrt{\sigvar{\epsilon}\left(\frac{1}{n_i} + \frac{1}{n_i'}\right)}} \sim t_{n_T - a}
     \end{equation}
 
     NOTE: The abova results depend on the assumptions of SFA.
@@ -776,7 +776,7 @@
     Thus, a $(1-\alpha)100\%$ CI for $(\mean{i} - \mean{i}')$ is 
 
     \begin{equation}
-        (\bar{Y_{i\bul}} - \bar{Y_{i\bul}'}) \pm t_{1-\alpha/2; n_T - a} \sqrt{MSE/(n_i + n_i')}
+        (\bar{Y_{i\bul}} - \bar{Y_{i\bul}'}) \pm t_{1-\alpha/2; n_T - a} \sqrt{MSE\left(\frac{1}{n_i} + \frac{1}{n_i'}\right)}
     \end{equation}
 
     \subsection{CI for contrast of means}
